@@ -21,15 +21,12 @@
         <script type="text/javascript">
             const ws = new WebSocket(`wss://${window.document.location.host}`);
             ws.binaryType = "blob";
-            /*
             ws.addEventListener("open", event => {
                 console.log("Websocket connection opened");
             });
             ws.addEventListener("close", event => {
                 console.log("Websocket connection closed");
             });
-
-             */
             ws.onmessage = function (message) {
                 const msgDiv = document.createElement('div');
                 msgDiv.classList.add('bg-gray-200', 'rounded', 'flex', 'items-center', 'p-3');
@@ -56,6 +53,9 @@
                 document.getElementById('inputBox').value = ''
                 window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
             })
+
+
+
         </script>
     </body>
 </html>
