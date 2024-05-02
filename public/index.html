@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <script src="https://cdn.tailwindcss.com"></script>
+        <title>Application de chat</title>
+    </head>
+
+    <body>
+        <div class="mx-10 my-5">
+            <h1 class="text-4xl text-center mb-16">Chat Application</h1>
+            <div id="messages" class="flex flex-col gap-4 my-4"></div>
+        </div>
+        <form id="msgForm" class="flex items-center justify-between gap-4 text-lg h-10 fixed bottom-10 right-0 px-10 w-full">
+            <input id="inputBox" class="flex items-center h-full flex-1 rounded px-3 border" type="text" placeholder="Type your message…">
+            <input type="submit" class="flex items-center justify-center h-full px-10 bg-purple-700 rounded text-white" value="Send">
+        </form>
+        <script type="text/javascript">
+            const ws = new WebSocket(`ws://${window.document.location.host}`);
+            ws.binaryType = "blob";
+            /*
+            ws.addEventListener("open", event => {
+                console.log("Websocket connection opened");
+            });
+            ws.addEventListener("close", event => {
+                console.log("Websocket connection closed");
+            });
+
+             */
+            ws.onmessage = function (message) {
+                const msgDiv = document.createElement('div');
+                msgDiv.classList.add('bg-gray-200', 'rounded', 'flex', 'items-center', 'p-3');
+                let reader;
+                if (message.data instanceof Blob) {
+                    reader = new FileReader();
+                    reader.onload = () => {
+                        msgDiv.innerHTML = reader.result;
+                        document.getElementById('messages').appendChild(msgDiv);
+                        window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+                    };
+                    reader.readAsText(message.data);
+                } else {
+                    console.log("Result2: " + message.data);
+                    msgDiv.innerHTML = message.data;
+                    document.getElementById('messages').appendChild(msgDiv);
+                }
+            }
+            const form = document.getElementById('msgForm');
+            form.addEventListener('submit', (event) => {
+                event.preventDefault();
+                const message = document.getElementById('inputBox').value;
+                ws.send(message);
+                document.getElementById('inputBox').value = ''
+                window.scrollTo({ left: 0, top: document.body.scrollHeight, behavior: "smooth" });
+            })
+        </script>
+    </body>
+</html>
